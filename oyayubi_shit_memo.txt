@@ -1,0 +1,47 @@
+
+const size_t LEN_MAX_KANA = 4;
+
+const uint8_t KANA_SEQ[][LEN_MAX_KANA] PROGMEM = {
+  "a",
+  ...
+  "gya",
+  "gyu",
+  ...  
+};
+
+const size_t COUNT_KANA = sizeof(KANA_SEQ) / sizeof(KANA_SEQ[0]);
+const uint16_t KANA_START = SAFE_RANGE;
+const uint16_t KANA_END = KANA_START + COUNT_KANA;
+enum kana_keycodes {
+  KANA_A = KANA_START,
+  KANA_I,
+  ...
+};
+
+bool process_kana(uint16_t keycode, keyrecord_t *record)
+{
+  if (record->event.pressed){
+    if ((KANA_START <= keycode) && (keycode < KANA_END){
+      uint16_t idx = keycode - KANA_START;
+      send_string_P(KANA_SEQ[idx]);
+      return false;
+    }
+  }
+  return true;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record)
+{
+  if (!process_kana(keycode, record))){
+    return false;
+  }
+  return true;
+}
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [0] = {
+      {KANA_A, KANA_I ...}
+    }
+};
+
+
